@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +28,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        File dir = this.getExternalFilesDir(null);
+        File outFile = new File(dir, "test.txt");
+        String content = "this is an outer storage test";
+        try {
+            FileOutputStream os = new FileOutputStream(outFile);
+            os.write(content.getBytes());
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+
+        }
 
         ListView listview = findViewById(R.id.listview);
         str = new ArrayList<String>();
