@@ -3,6 +3,7 @@ package luke.exe.mybilling;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
@@ -16,9 +17,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
@@ -32,33 +35,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        File dir = this.getExternalFilesDir(null);
-        File outFile = new File(dir, "test.txt");
-        String content = "this is an outer storage test";
-        try {
-            FileOutputStream os = new FileOutputStream(outFile);
-            os.write(content.getBytes());
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-
-        }
-
-        File inFile = new File(dir, "test.txt");
-        StringBuilder data = new StringBuilder();
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), "utf-8"));
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                data.append(line);
-            }
-        } catch (Exception e) {
-
-        }
-        Toast.makeText(this, data.toString(), Toast.LENGTH_SHORT).show();
-
         ListView listview = findViewById(R.id.listview);
         str = new ArrayList<String>();
+
+        readFile();
+
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, str);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!item.getText().toString().equals("") && !item.getText().toString().equals("")) {
                     str.add(item.getText().toString() + ": " + price.getText().toString());
                     adapter.notifyDataSetChanged();
+
+                    writeFile();
                 }
             }
         });
@@ -88,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 if (clickitem >= 0) {
                     str.remove(clickitem);
                     adapter.notifyDataSetChanged();
+
+                    writeFile();
                 }
                 clickitem = -1;
             }
@@ -110,5 +95,37 @@ public class MainActivity extends AppCompatActivity {
                 return false;
         }
         return true;
+    }
+
+    void writeFile() {
+        File dir = this.getExternalFilesDir(null);
+        File outFile = new File(dir, "billing.txt");
+        String content = "this is an outer storage test";
+        try {
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"));
+            for (int i = 0; i < str.size(); i++) {
+                writer.write(str.get(i));
+                writer.newLine();
+            }
+            writer.close();
+        } catch (Exception e) {
+            Log.d("MyBilling", "File write fail!");
+        }
+    }
+
+    void readFile() {
+        File dir = this.getExternalFilesDir(null);
+        File inFile = new File(dir, "billing.txt");
+        StringBuilder data = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), "utf-8"));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                str.add(line);
+            }
+            reader.close();
+        } catch (Exception e) {
+            Log.d("MyBilling", "File read fail!");
+        }
     }
 }
