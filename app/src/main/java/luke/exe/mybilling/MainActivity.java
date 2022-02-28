@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder data = new StringBuilder();
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), "utf-8"));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                data.append(line);
+            }
         } catch (Exception e) {
 
         }
