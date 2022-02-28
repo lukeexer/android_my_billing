@@ -15,8 +15,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +43,15 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
 
         }
+
+        File inFile = new File(dir, "test.txt");
+        StringBuilder data = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), "utf-8"));
+        } catch (Exception e) {
+
+        }
+        Toast.makeText(this, data.toString(), Toast.LENGTH_SHORT).show();
 
         ListView listview = findViewById(R.id.listview);
         str = new ArrayList<String>();
